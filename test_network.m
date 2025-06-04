@@ -1,0 +1,20 @@
+function test_network(testImagePath, imageSize, netTrained, fldrName, parameters)
+    disp("Testing Network");
+
+    imdsTest = imageDatastore(testImagePath, IncludeSubfolders=true);
+    testresize = transform(imdsTest, @(x) imresize(x, 'OutputSize', imageSize));
+    fileIdx = 0;
+
+    outName = sprintf("%s\\Output", fldrName);
+    if exist(outName, "dir") ~= 7
+        mkdir(outName);
+    end
+
+    while hasdata(testresize)
+        img = read(testresize);
+        fileIdx = fileIdx + 1;
+        d = dlarray(single(img), 'SSCB');
+        output = predict(netTrained, d, InputDataFormats='SSCB');
+        save(sprintf("%s\\output-%s-%04d.mat", outName, parameters, fileIdx), "output");
+    end
+end
