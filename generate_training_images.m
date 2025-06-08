@@ -1,5 +1,5 @@
 function generate_training_images(basePath)
-    disp("Generating Training Images");
+    fprintf("Training Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     folders = get_image_folders(basePath, "Training");
     
@@ -10,10 +10,10 @@ function generate_training_images(basePath)
         end
         dataPath = folders(folderIdx).dataPath;
         files = dir(strjoin([ dataPath "*.sigmf-meta" ], ''));
-        for fileIdx = 1:length(files)
+        parfor fileIdx = 1:length(files)
             file = files(fileIdx).name;
             pngName = [imgPath file ".png"];
-            if ~exist(strjoin(pngName, ""), 'file')
+            if exist(strjoin(pngName, ""), 'file') == 0
                 fileToLoad = [ dataPath file ];
                 [~, sample_rate, signal_data] = read_sigmf_iqdata(fileToLoad);
                 signalFrequency = carrier_frequency(signal_data', sample_rate);
@@ -22,4 +22,5 @@ function generate_training_images(basePath)
         end
     end
 
+    fprintf("Training Images Finished Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end

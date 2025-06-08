@@ -1,11 +1,10 @@
-function train_network(trainImagePath, pixelImagePath, imageSize, optim, learn_rate, max_epochs, mini, fldrName, parameters)
-    disp("Training Network");
+function train_network(trainImagePath, pixelImagePath, imageSize, classNames, optim, learn_rate, max_epochs, mini, fldrName, parameters)
+    fprintf("Network Training Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
     
     % create the training image datastore for the spectrograms    
     imdsTrain = imageDatastore(trainImagePath, IncludeSubfolders=true, LabelSource="foldernames");
 
     % create the pixel data store
-    classNames = ["Signal", "Noise"];         % labels
     pixelLabelIDs = {[0 0 0], [255 255 255]}; % create an array that maps pixels to classes
     pxds = pixelLabelDatastore(pixelImagePath, classNames, pixelLabelIDs, IncludeSubfolders = true);
 
@@ -38,4 +37,6 @@ function train_network(trainImagePath, pixelImagePath, imageSize, optim, learn_r
     train_concat = sprintf("%s\\trainnet-%s.mat", fldrName, parameters);
     [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
     save(train_concat, 'netTrained');
+    
+    fprintf("Network Training Finished At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end

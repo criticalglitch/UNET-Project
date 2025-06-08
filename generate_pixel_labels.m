@@ -1,5 +1,5 @@
 function generate_pixel_labels(trainPath, pixelPath, imageSize)
-    disp("Generating Pixel Images");
+    fprintf("Pixel Label Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
     
     imdsTrain = imageDatastore(trainPath, IncludeSubfolders=true, LabelSource="foldernames");
     imgResize = transform(imdsTrain, @(x) imresize(x, imageSize)); % resize images
@@ -8,6 +8,16 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize)
     % pre create destination directories
     if exist(pixelPath, "dir") ~= 7
         mkdir(pixelPath);
+    end
+
+    %recursive directory creationu
+    folders = dir(fullfile(trainPath, '**\*.*'));
+    folders = folders([folders(:).isdir] == 1);
+    folders = folders(~ismember({folders(:).name}, {'.', '..'}));
+    for i = 1:length(folders)
+        path = [folders(i).folder '\' folders(i).name];
+        path = replace(path, trainPath, pixelPath);
+        mkdir(path);
     end
 
     fileIdx = 0;
@@ -35,6 +45,8 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize)
 
         imwrite(newI, destPath);
     end
+
+    fprintf("Pixel Label Images Finished Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end
 
 
