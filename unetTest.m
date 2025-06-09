@@ -3,6 +3,9 @@ clearvars; clc; close('all');
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
 basePath = 'D:\DoctoralWork';
+if exist(basePath, "dir") ~= 7
+  basePath = '~/Documents/GitHub/UNET-Project';
+end
 trainImagePath = "Images\Training";
 testImagePath = "Images\Evaluation"; 
 pixelImagePath = "Images\GroundTruth";
