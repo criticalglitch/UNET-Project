@@ -19,24 +19,31 @@ max_epochs = 1;
 mini = 6; % minibatch size 
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
 
+function classes = componentMatixToClasses(componentMatrix) 
+    minnn = min(min(min(componentMatrix)));
+    maxxx = max(max(max(componentMatrix)));
+    mid = (maxxx + minnn) / 2;
+    classes = componentMatrix > mid;
+end
+
 fldrName = sprintf("UNet-%s", parameters);
 if exist(fldrName, "dir") ~= 7
     mkdir(fldrName);
 end
-% 
-% generate_test_images(basePath, testImagePath);
-% generate_training_images(basePath);
-% 
-% files = dir(strjoin([pixelImagePath "\**\*.png"], ''));
-% if isempty(files)
-%     generate_pixel_labels(trainImagePath, pixelImagePath, imageSize);
-% end
-% 
-% train_concat = sprintf("%s\\trainnet-%s.mat", fldrName, parameters);
-% if exist(train_concat, 'file') ~= 2
-%     train_network(trainImagePath, pixelImagePath, imageSize, classNames, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
-% end
-% netTrained = load(train_concat);
-% test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
+
+generate_test_images(basePath, testImagePath);
+generate_training_images(basePath);
+
+files = dir(strjoin([pixelImagePath "\**\*.png"], ''));
+if isempty(files)
+    generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatixToClasses);
+end
+
+train_concat = sprintf("%s\\trainnet-%s.mat", fldrName, parameters);
+if exist(train_concat, 'file') ~= 2
+    train_network(trainImagePath, pixelImagePath, imageSize, classNames, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
+end
+netTrained = load(train_concat);
+test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
 
 gen_predictive_img(testImagePath, parameters, imageSize, classNames);

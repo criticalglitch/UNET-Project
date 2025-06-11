@@ -1,9 +1,9 @@
-function generate_pixel_labels(trainPath, pixelPath, imageSize)
+function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
     fprintf("Pixel Label Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
-    
+    colmap = load("colormap.mat");
     imdsTrain = imageDatastore(trainPath, IncludeSubfolders=true, LabelSource="foldernames");
     imgResize = transform(imdsTrain, @(x) imresize(x, imageSize)); % resize images
-    imgIdx = transform(imgResize, @(x) rgb2ind(x, parula));
+    imgIdx = transform(imgResize, @(x) rgb2ind(x, colmap.cm));
 
     % pre create destination directories
     if exist(pixelPath, "dir") ~= 7
@@ -30,14 +30,11 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize)
         dat = double(reshape(img, [], 1));
         ret = fastICA(dat', 2);
 
-        out = reshape(ret, rows, cols, 2);
+        componentMatrix = reshape(ret, rows, cols, 2);
 
-        minnn = min(min(min(out)));
-        maxxx = max(max(max(out)));
-        mid = (maxxx + minnn) / 2;
-        bin = out > mid;
+        classes = classifier(componentMatrix);
 
-        newI = uint8(bin(:, :, 1));
+        newI = uint8(classes(:, :, 1));
         newI = cat(3, newI, newI, newI) * 255;
 
         origPath = imdsTrain.Files(fileIdx);

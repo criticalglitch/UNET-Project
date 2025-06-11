@@ -18,5 +18,5 @@ function test_network(testImagePath, imageSize, netTrained, fldrName, parameters
         save(sprintf("%s\\output-%s-%04d.mat", outName, parameters, fileIdx), "output");
     end
 
-    fprintf("Network Testing Finished At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
+    fprintf("Network Testing Finished At: %s\nem", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end
