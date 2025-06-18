@@ -1,7 +1,7 @@
 function generate_test_images(testImagePath)
     fprintf("Test Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
-    frameFiles = 24;
+    frameFiles = 100;
     frameLen = 128;
     set = 1;
     alpha = 1;
