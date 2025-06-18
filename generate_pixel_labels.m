@@ -11,7 +11,7 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
     end
 
     %recursive directory creationu
-    folders = dir(strjoin([ trainPath '**/*.*'], ''));
+    folders = dir(strjoin([ trainPath "/**/*.*"], ''));
     folders = folders([folders(:).isdir] == 1);
     folders = folders(~ismember({folders(:).name}, {'.', '..'}));
     for i = 1:length(folders)
