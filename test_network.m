@@ -5,7 +5,7 @@ function test_network(testImagePath, imageSize, netTrained, fldrName, parameters
     testresize = transform(imdsTest, @(x) imresize(x, 'OutputSize', imageSize));
     fileIdx = 0;
 
-    outName = sprintf("%s\\Output", fldrName);
+    outName = fullfile(fldrName, "Output");
     if exist(outName, "dir") ~= 7
         mkdir(outName);
     end
@@ -15,7 +15,7 @@ function test_network(testImagePath, imageSize, netTrained, fldrName, parameters
         fileIdx = fileIdx + 1;
         d = dlarray(single(img), 'SSCB');
         output = predict(netTrained, d, InputDataFormats='SSCB');
-        save(sprintf("%s\\output-%s-%04d.mat", outName, parameters, fileIdx), "output");
+        save(fullfile(outName, sprintf("output-%s-%04d.mat", parameters, fileIdx)), "output");
     end
 
     fprintf("Network Testing Finished At: %s\nem", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));

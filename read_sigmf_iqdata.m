@@ -1,5 +1,5 @@
 function [channels, sample_rate, points] = read_sigmf_iqdata(sigmf_filepath) % define
-    script = "utilities\\sigmf_import.py";
+    script = fullfile("utilities", "sigmf_import.py");
     python_vars = ["c", "sr", "num", "reals", "imags"];
     
     if size(sigmf_filepath, 1) ~= 1

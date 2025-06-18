@@ -2,13 +2,9 @@ clearvars; clc; close('all');
 
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
-basePath = 'D:\DoctoralWork';
-if exist(basePath, "dir") ~= 7
-  basePath = '~/Documents/GitHub/UNET-Project';
-end
-trainImagePath = "Images\Training";
-testImagePath = "Images\Evaluation"; 
-pixelImagePath = "Images\GroundTruth";
+trainImagePath = fullfile('Images', 'Training');
+testImagePath = fullfile("Images", "Evaluation"); 
+pixelImagePath = fullfile("Images", "GroundTruth");
 
 classNames = ["Signal", "Noise"];         % labels
 imageSize = [ 720 960 ];
@@ -31,15 +27,15 @@ if exist(fldrName, "dir") ~= 7
     mkdir(fldrName);
 end
 
-generate_test_images(basePath, testImagePath);
-generate_training_images(basePath);
+generate_test_images(testImagePath);
+generate_training_images();
 
-files = dir(strjoin([pixelImagePath "\**\*.png"], ''));
+files = dir(strjoin([ pixelImagePath "/**/*.png"], ''));
 if isempty(files)
     generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatixToClasses);
 end
 
-train_concat = sprintf("%s\\trainnet-%s.mat", fldrName, parameters);
+train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
 if exist(train_concat, 'file') ~= 2
     train_network(trainImagePath, pixelImagePath, imageSize, classNames, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
 end

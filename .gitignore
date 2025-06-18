@@ -5,3 +5,6 @@ Images/
 *.zip
 *.png
 UNet-*/
+*.sigmf-meta
+*.sigmf-data
+*.iqdata

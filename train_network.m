@@ -33,8 +33,8 @@ function train_network(trainImagePath, pixelImagePath, imageSize, classNames, op
                               ExecutionEnvironment='gpu', ...
                               Plots="training-progress");
 
-    save(sprintf("%s\\debug-%s.mat", fldrName, parameters));
-    train_concat = sprintf("%s\\trainnet-%s.mat", fldrName, parameters);
+    save(fullfile(fldrName, sprintf("debug-%s.mat", parameters)));
+    train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
     [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
     save(train_concat, 'netTrained');
     
