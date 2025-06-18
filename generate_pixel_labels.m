@@ -31,7 +31,7 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
             [rows, cols] = size(img);
 
             dat = double(reshape(img, [], 1));
-            ret = fastICA(dat', 2);
+            ret = fastICA(dat', 2, "kurtosis", 0);
 
             componentMatrix = reshape(ret, rows, cols, 2);
 
