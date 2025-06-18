@@ -29,11 +29,7 @@ end
 
 generate_test_images(testImagePath);
 generate_training_images();
-
-files = dir(strjoin([ pixelImagePath "/**/*.png"], ''));
-if isempty(files)
-    generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatixToClasses);
-end
+generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatixToClasses);
 
 train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
 if exist(train_concat, 'file') ~= 2
