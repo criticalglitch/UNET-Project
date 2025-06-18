@@ -24,7 +24,7 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
     parfor fileIdx = 1:length(files)
         file = string(files(fileIdx));
         destPath = string(replace(file, trainPath, pixelPath));
-        if exist(destPath, 'file') ~= 7
+        if exist(destPath, 'file') ~= 2
             img = imread(file, "png");
             img = imresize(img, imageSize);
             img = rgb2ind(img, colmap.cm);

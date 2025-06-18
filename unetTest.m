@@ -12,7 +12,7 @@ imageSize = [ 720 960 ];
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
 learn_rate = 1e-2; % default = 1e-2
 max_epochs = 1;
-mini = 15; % minibatch size 
+mini = 4; % minibatch size 
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
 
 function classes = componentMatixToClasses(componentMatrix) 
