@@ -3,7 +3,7 @@ clearvars; clc; close('all');
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
 trainImagePath = fullfile('Images', 'Training');
-testImagePath = fullfile("Images", "Evaluation"); 
+testImagePath = fullfile("Images", "Evaluation");
 pixelImagePath = fullfile("Images", "GroundTruth");
 
 classNames = ["Signal", "Noise"];         % labels
@@ -12,10 +12,10 @@ imageSize = [ 720 960 ];
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
 learn_rate = 1e-2; % default = 1e-2
 max_epochs = 1;
-mini = 4; % minibatch size 
+mini = 4; % minibatch size
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
 
-function classes = componentMatrixToClasses(componentMatrix) 
+function classes = componentMatrixToClasses(componentMatrix)
     minnn = min(min(min(componentMatrix)));
     maxxx = max(max(max(componentMatrix)));
     mid = (maxxx + minnn) / 2;

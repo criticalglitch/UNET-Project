@@ -36,6 +36,8 @@ function train_network(trainImagePath, pixelImagePath, imageSize, classNames, op
     save(fullfile(fldrName, sprintf("debug-%s.mat", parameters)));
     train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
     [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
+    currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
+    exportgraphics(currentfig, fullfile(fldrName, "trainloss.png"));
     save(train_concat, 'netTrained');
     
     fprintf("Network Training Finished At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
