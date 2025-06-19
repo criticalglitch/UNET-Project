@@ -15,7 +15,7 @@ max_epochs = 1;
 mini = 4; % minibatch size 
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
 
-function classes = componentMatixToClasses(componentMatrix) 
+function classes = componentMatrixToClasses(componentMatrix) 
     minnn = min(min(min(componentMatrix)));
     maxxx = max(max(max(componentMatrix)));
     mid = (maxxx + minnn) / 2;
@@ -29,7 +29,7 @@ end
 
 generate_test_images(testImagePath);
 generate_training_images();
-generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatixToClasses);
+generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatrixToClasses);
 
 train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
 if exist(train_concat, 'file') ~= 2
