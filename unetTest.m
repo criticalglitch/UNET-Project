@@ -6,7 +6,8 @@ trainImagePath = fullfile('Images', 'Training');
 testImagePath = fullfile("Images", "Evaluation");
 pixelImagePath = fullfile("Images", "GroundTruth");
 
-classNames = ["Signal", "Noise"];         % labels
+classNames = ["Signal", "Noise", "Other"];         % labels
+pixelLabelIDs = {[0 0 255], [255 0 0], [0 255 0]}; % create an array that maps pixels to classes
 imageSize = [ 720 960 ];
 
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
@@ -16,10 +17,7 @@ mini = 4; % minibatch size
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
 
 function classes = componentMatrixToClasses(componentMatrix)
-    minnn = min(min(min(componentMatrix)));
-    maxxx = max(max(max(componentMatrix)));
-    mid = (maxxx + minnn) / 2;
-    classes = componentMatrix > mid;
+    [ ~, classes ] = max(componentMatrix, [], 3);
 end
 
 fldrName = sprintf("UNet-%s", parameters);
@@ -29,11 +27,11 @@ end
 
 generate_test_images(testImagePath);
 generate_training_images();
-generate_pixel_labels(trainImagePath, pixelImagePath, imageSize, @componentMatrixToClasses);
+generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
 
 train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
 if exist(train_concat, 'file') ~= 2
-    train_network(trainImagePath, pixelImagePath, imageSize, classNames, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
+    train_network(trainImagePath, pixelImagePath, imageSize, classNames, pixelLabelIDs, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
 end
 netTrained = load(train_concat);
 test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data

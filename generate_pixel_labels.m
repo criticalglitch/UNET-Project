@@ -1,7 +1,7 @@
-function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
+function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, classifier)
     fprintf("Pixel Label Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
     colmap = load("colormap.mat");
-    
+    class_dim = size(pixelLabelIDs, 2);
     % pre create destination directories
     folders = get_image_folders("GroundTruth");
     mkdir(pixelPath);
@@ -26,14 +26,20 @@ function generate_pixel_labels(trainPath, pixelPath, imageSize, classifier)
             [rows, cols] = size(img);
 
             dat = double(reshape(img, [], 1));
-            ret = fastICA(dat', 2, "kurtosis", 0);
+            ret = fastICA(dat', class_dim, "kurtosis", 0);
 
-            componentMatrix = reshape(ret, rows, cols, 2);
+            componentMatrix = reshape(ret, rows, cols, class_dim);
 
-            classes = classifier(componentMatrix);
-
-            newI = uint8(classes(:, :, 1));
-            newI = cat(3, newI, newI, newI) * 255;
+            classes = reshape(classifier(componentMatrix), rows*cols, 1);
+            newI = zeros(rows*cols, class_dim);
+            for color = 1:class_dim
+                locs = classes == color;
+                c = pixelLabelIDs{color};
+                newI(locs, 1) = c(1);
+                newI(locs, 2) = c(2);
+                newI(locs, 3) = c(3);
+            end
+            newI = reshape(newI, rows, cols, class_dim);
 
             imwrite(newI, destPath);
         end
