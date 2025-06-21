@@ -39,7 +39,7 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
                 newI(locs, 2) = c(2);
                 newI(locs, 3) = c(3);
             end
-            newI = reshape(newI, rows, cols, class_dim);
+            newI = reshape(newI, rows, cols, 3);
 
             imwrite(newI, destPath);
         end

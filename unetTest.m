@@ -6,8 +6,8 @@ trainImagePath = fullfile('Images', 'Training');
 testImagePath = fullfile("Images", "Evaluation");
 pixelImagePath = fullfile("Images", "GroundTruth");
 
-classNames = ["Signal", "Noise", "Other"];         % labels
-pixelLabelIDs = {[0 0 255], [255 0 0], [0 255 0]}; % create an array that maps pixels to classes
+classNames = [ "Signal", "Noise" ];         % labels
+pixelLabelIDs = { [0 0 255], [255 0 0] }; % create an array that maps pixels to classes
 imageSize = [ 720 960 ];
 
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
