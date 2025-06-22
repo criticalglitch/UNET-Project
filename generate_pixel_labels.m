@@ -16,22 +16,28 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
 
     files = imdsTrain.Files;
     cm = colmap.cm;
-    parfor fileIdx = 1:length(files)
+    parfor fileIdx = 1:length(files) % par
         file = string(files(fileIdx));
         destPath = string(replace(file, trainPath, pixelPath));
         if exist(destPath, 'file') ~= 2
             img = imread(file, "png");
-            img = imresize(img, imageSize);
+            [height, width, ~] = size(img);
+            if height ~= imageSize(1) || width ~= imageSize(2)
+                error("File %s does not have the expected height or width! Found %03d by %03d image instead.", file, height, width);
+            end
             img = rgb2ind(img, cm);
-            [rows, cols] = size(img);
 
-            dat = double(reshape(img, [], 1));
-            ret = fastICA(dat', class_dim, "kurtosis", 0);
+            componentMatrix = zeros(height, width, class_dim);
+            for row = 1:height
+                dat = double(img(row, :));
+                ret = fastICA(dat, class_dim, "kurtosis", 0);
+                for class = 1:class_dim
+                    componentMatrix(row, :, class) = ret(class, :);
+                end
+            end
 
-            componentMatrix = reshape(ret, rows, cols, class_dim);
-
-            classes = reshape(classifier(componentMatrix), rows*cols, 1);
-            newI = zeros(rows*cols, class_dim);
+            classes = reshape(classifier(componentMatrix), height * width, 1);
+            newI = zeros(height*width, 3);
             for color = 1:class_dim
                 locs = classes == color;
                 c = pixelLabelIDs{color};
@@ -39,7 +45,7 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
                 newI(locs, 2) = c(2);
                 newI(locs, 3) = c(3);
             end
-            newI = reshape(newI, rows, cols, 3);
+            newI = reshape(newI, height, width, 3);
 
             imwrite(newI, destPath);
         end
