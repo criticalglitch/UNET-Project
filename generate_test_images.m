@@ -21,7 +21,7 @@ function generate_test_images(testImagePath)
                     signal_data = read_rfchallenge_multisensor_frame(frameLen, set, alpha, fileIdx);
                     channels = reshape_per_antenna(signal_data, nAntenna);
                     signalFrequency = carrier_frequency(channels(antenna), sample_rate);
-                    generate_specgram_imagefile(signal_data, signalFrequency, pngName, 128, 64, 256, 20);
+                    generate_specgram_imagefile(channels(antenna), signalFrequency, pngName, 128, 64, 256, 20);
                 end
             end
         end
