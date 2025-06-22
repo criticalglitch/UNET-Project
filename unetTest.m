@@ -34,6 +34,6 @@ if exist(train_concat, 'file') ~= 2
     train_network(trainImagePath, pixelImagePath, imageSize, classNames, pixelLabelIDs, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
 end
 netTrained = load(train_concat);
-% test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
+test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
 
 gen_predictive_img(testImagePath, parameters, imageSize, classNames);
