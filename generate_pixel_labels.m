@@ -21,11 +21,9 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
         destPath = string(replace(file, trainPath, pixelPath));
         if exist(destPath, 'file') ~= 2
             img = imread(file, "png");
-            [height, width, ~] = size(img);
-            if height ~= imageSize(1) || width ~= imageSize(2)
-                error("File %s does not have the expected height or width! Found %03d by %03d image instead.", file, height, width);
-            end
+            img = imresize(img, imageSize);
             img = rgb2ind(img, cm);
+            [height, width, ~] = size(img);
 
             componentMatrix = zeros(height, width, class_dim);
             for row = 1:height

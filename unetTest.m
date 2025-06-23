@@ -8,7 +8,7 @@ pixelImagePath = fullfile("Images", "GroundTruth");
 
 classNames = [ "Signal", "Noise" ];         % labels
 pixelLabelIDs = { [0 0 255], [255 0 0] }; % create an array that maps pixels to classes
-imageSize = [ 1443 2277 ];
+imageSize = [ 720 960 ];
 
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
 learn_rate = 1e-2; % default = 1e-2
