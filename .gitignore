@@ -4,6 +4,7 @@ Images/
 *.asv
 *.zip
 *.png
+*.tar.*
 UNet-*/
 *.sigmf-meta
 *.sigmf-data
