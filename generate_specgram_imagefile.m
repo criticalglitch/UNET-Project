@@ -1,5 +1,5 @@
 function generate_specgram_imagefile(signal_data, carrier_frequency, save_path, window, noverlap, nfft, threshold)
-    arguments
+    arguments % limits what values each argument can hold (1, 1) = scalar (1 x 1 matrix)
         signal_data (1, :) {mustBeNumeric}
         carrier_frequency (1, 1) {mustBeNumeric, mustBePositive}
         save_path (1, 1) {mustBeText}
