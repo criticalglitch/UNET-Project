@@ -11,14 +11,12 @@ function generate_specgram_imagefile(signal_data, carrier_frequency, imageSize, 
     end
 
     colmap = load("colormap.mat", 'cm');
-
-    f = figure;
+    Height = imageSize(1);
+    Width = imageSize(2);
 
     spectrogram(signal_data, window, noverlap, nfft, carrier_frequency, MinThreshold=threshold);
     colormap(colmap.cm);
     
-    Height = imageSize(1);
-    Width = imageSize(2);
 
     set(gca, 'XTick', []); % point = increment
     set(gca, 'YTick', []); % range + increment
@@ -26,7 +24,5 @@ function generate_specgram_imagefile(signal_data, carrier_frequency, imageSize, 
     ylabel("");
     colorbar('off');
 
-    f.Position(3:4) = [ Width Height ];
-
-    exportgraphics(f, strjoin(save_path, ''), Units="pixels", Width=Width,Height=Height);
+    exportgraphics(gca, strjoin(save_path, ''), Units="pixels", Width=Width, Height=Height);
 end
