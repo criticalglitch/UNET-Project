@@ -9,6 +9,7 @@ pixelImagePath = fullfile("Images", "GroundTruth");
 classNames = [ "Signal", "Noise" ];         % labels
 pixelLabelIDs = { [0 0 255], [255 0 0] }; % create an array that maps pixels to classes
 imageSize = [ 720 960 ];
+class_dim = size(pixelLabelIDs, 2);
 
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
 learn_rate = 1e-2; % default = 1e-2
@@ -28,6 +29,7 @@ end
 generate_test_images(testImagePath);
 generate_training_images();
 generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
+generate_evaluation_truth(); % TODO: Pass in necessary parameters
 
 train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
 if exist(train_concat, 'file') ~= 2

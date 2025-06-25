@@ -1,11 +1,11 @@
 function generate_test_images(testImagePath)
     fprintf("Test Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
-    frameLen = 128; % 128
-    setIdx = 1; % 1
-    alpha_files = 25; % 25
-    frameFiles = 100; % 100
-    nAntenna = 4; % 4
+    frameLen = 128; % 128 complex-valued pairs
+    setIdx = 1; % 1, only set 1 is used of 20
+    alpha_files = 25; % 25, the amount of SINR ratios (-18 to 12 dB)
+    frameFiles = 100; % 100, the amount of frames per alpha
+    nAntenna = 4; % 4 antenna channels
 
     sample_rate = 25e6;
 
