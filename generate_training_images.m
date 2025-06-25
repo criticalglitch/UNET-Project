@@ -1,4 +1,4 @@
-function generate_training_images()
+function generate_training_images(imageSize)
     fprintf("Training Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     folders = get_image_folders("Training");
@@ -17,7 +17,7 @@ function generate_training_images()
                 fileToLoad = fullfile(dataPath, file);
                 [~, sample_rate, signal_data] = read_sigmf_iqdata(fileToLoad);
                 signalFrequency = carrier_frequency(signal_data', sample_rate);
-                generate_specgram_imagefile(signal_data, signalFrequency, pngName);
+                generate_specgram_imagefile(signal_data, signalFrequency, imageSize, pngName);
             end
         end
     end

@@ -1,4 +1,4 @@
-function generate_test_images(testImagePath)
+function generate_test_images(testImagePath, imageSize)
     fprintf("Test Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     frameLen = 128; % 128 complex-valued pairs
@@ -23,7 +23,7 @@ function generate_test_images(testImagePath)
                     signal = channels(antenna, :); % grabs all data per antenna channel
                     signal = signal(:)'; % vectorize and transpose
                     signalFrequency = carrier_frequency(signal, sample_rate);
-                    generate_specgram_imagefile(signal, signalFrequency, pngName, 128, 64, 256, -Inf); % Thresholding = 20
+                    generate_specgram_imagefile(signal, signalFrequency, imageSize, pngName, 128, 64, 256, -Inf); % Thresholding = 20
                 end
             end
         end

@@ -26,8 +26,8 @@ if exist(fldrName, "dir") ~= 7
     mkdir(fldrName);
 end
 
-generate_test_images(testImagePath);
-generate_training_images();
+generate_test_images(testImagePath, imageSize);
+generate_training_images(imageSize);
 generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
 generate_evaluation_truth(); % TODO: Pass in necessary parameters
 
