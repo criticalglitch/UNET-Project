@@ -29,7 +29,7 @@ function gen_predictive_img(testPath, unetParams, imgSize, classNames)
     wrappedSigClass = transform(sigClass, @(x) {x});                                                                % Wrap in a Cell
 
     combined = combine(wrappedImg, wrappedSigClass);                                                                % Combine cell arrays of image and signal class
-    overlayed = transform(combined, @(x) labeloverlay(x{1}, categorical(x{2}, 1:length(classNames), classNames), IncludedLabels=[ "Signal" ], Transparency=0.5));  % Create overlay image from the two cell arrays
+    overlayed = transform(combined, @(x) labeloverlay(x{1}, categorical(x{2}, 1:length(classNames), classNames), Transparency=0.5));  % Create overlay image from the two cell arrays
 
     fldrName = fullfile(unetDir, "OverlayImages");
     if exist(fldrName, "dir") ~= 7
