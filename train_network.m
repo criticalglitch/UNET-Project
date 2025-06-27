@@ -22,7 +22,9 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         numClasses = size(classNames, 2);
 
         % initialize unet
-        unetNetwork = unet(netImgSize, numClasses);
+        depth = 4;
+        encoderNetwork = pretrainedEncoderNetwork("googlenet", depth);
+        unetNetwork = unet(netImgSize, numClasses, EncoderNetwork=encoderNetwork, EncoderDepth=depth);
 
         lossFcn = "binary-crossentropy"; % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
         options = trainingOptions(trainParams.Optimizer, ...
