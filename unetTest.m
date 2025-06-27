@@ -12,7 +12,7 @@ imageSize = [ 720 960 ];
 class_dim = size(pixelLabelIDs, 2);
 
 optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
-learn_rate = 1e-2; % default = 1e-2
+learn_rate = 1e-3; % default = 1e-2
 max_epochs = 1;
 mini = 4; % minibatch size
 parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
