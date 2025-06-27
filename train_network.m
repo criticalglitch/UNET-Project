@@ -1,44 +1,52 @@
-function train_network(trainImagePath, pixelImagePath, imageSize, classNames, pixelLabelIDs, optim, learn_rate, max_epochs, mini, fldrName, parameters)
+function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainParams)
     fprintf("Network Training Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
-    
-    % create the training image datastore for the spectrograms    
-    imdsTrain = imageDatastore(trainImagePath, IncludeSubfolders=true, LabelSource="foldernames");
+    modelFile = fullfile(fldrArgs.OutputFolder, fldrArgs.ModelFile);
+    if exist(modelFile, 'file') ~= 2
+        % create the training image datastore for the spectrograms    
+        imdsTrain = imageDatastore(fldrArgs.TrainImages, IncludeSubfolders=true, LabelSource="foldernames");
 
-    % create the pixel data store
-    pxds = pixelLabelDatastore(pixelImagePath, classNames, pixelLabelIDs, IncludeSubfolders = true);
+        % create the pixel data store
+        pxds = pixelLabelDatastore(fldrArgs.LabelImages, classNames, pixelLabelIDs, IncludeSubfolders = true);
+        
+        % add train-test split for validation
+        [imdsTrainSplit, imdsValSplit, pxdsTrainSplit, pxdsValSplit] = partition_semantic_segmentation_data(imdsTrain, pxds, 0.8);
 
-    h = imageSize(1);
-    w = imageSize(2);
+        combinedTrain = combine(imdsTrainSplit, pxdsTrainSplit);
+        combinedVal = combine(imdsValSplit, pxdsValSplit);
 
-    % define the image size and classes for the network
-    netImgSize = [ h w 3 ]; % [ Height x Width x Channels ]
-    numClasses = size(classNames, 2);
+        h = imageSize(1);
+        w = imageSize(2);
 
-    trainresize = transform(imdsTrain, @(x) imresize(x, 'OutputSize', imageSize)); % ensure all images are the same size
-    combinedTrain = combine(trainresize, pxds); % combine training data with pixel datastore
+        % define the image size and classes for the network
+        netImgSize = [ h w 3 ]; % [ Height x Width x Channels ]
+        numClasses = size(classNames, 2);
 
-    % initialize unet
-    unetNetwork = unet(netImgSize, numClasses);
+        % initialize unet
+        unetNetwork = unet(netImgSize, numClasses);
 
-    lossFcn = "binary-crossentropy"; % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
-    options = trainingOptions(optim, ...
-                              InitialLearnRate=learn_rate, ...
-                              MaxEpochs=max_epochs, ...
-                              CheckpointFrequency=1, ...
-                              InputDataFormats='SSCB', ...
-                              TargetDataFormats='SSCB', ...
-                              VerboseFrequency=1, ...
-                              MiniBatchSize=mini, ...
-                              ExecutionEnvironment='gpu', ...
-                              Plots="training-progress", ...
-                              Metrics="accuracy");
+        lossFcn = "binary-crossentropy"; % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
+        options = trainingOptions(trainParams.Optimizer, ...
+                                  InitialLearnRate=trainParams.LearnRate, ...
+                                  MaxEpochs=trainParams.MaxEpochs, ...
+                                  CheckpointFrequency=1, ...
+                                  InputDataFormats='SSCB', ...
+                                  TargetDataFormats='SSCB', ...
+                                  VerboseFrequency=1, ...
+                                  MiniBatchSize=trainParams.Minibatch, ...
+                                  ExecutionEnvironment='gpu', ...
+                                  Plots="training-progress", ...
+                                  Metrics="accuracy", ...
+                                  ValidationData=combinedVal, ...
+                                  ValidationFrequency=30, ...
+                                  Shuffle='every-epoch' ...
+        );
 
-    save(fullfile(fldrName, sprintf("debug-%s.mat", parameters)));
-    train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
-    [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
-    currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
-    exportgraphics(currentfig, fullfile(fldrName, "trainloss.png"));
-    save(train_concat, 'netTrained');
+        save(fullfile(fldrArgs.OutputFolder, sprintf("debug-%s.mat", trainParams.Parameters)));
+        [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
+        currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
+        exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
+        save(modelFile, 'netTrained');
+    end
     
     fprintf("Network Training Finished At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end

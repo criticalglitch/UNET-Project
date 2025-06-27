@@ -29,13 +29,19 @@ end
 generate_test_images(testImagePath, imageSize);
 generate_training_images(imageSize);
 generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
-generate_evaluation_truth(); % TODO: Pass in necessary parameters
+% generate_evaluation_truth(); % TODO: Pass in necessary parameters
+train_concat = sprintf("trainnet-%s.mat", parameters);
+fldrArgs = struct("TrainImages", trainImagePath, ...
+                    "LabelImages", pixelImagePath, ...
+                    "OutputFolder", fldrName, ...
+                    "ModelFile", train_concat);
+trainParams = struct("Optimizer", optim, ...
+                    "LearnRate", learn_rate, ...
+                    "MaxEpochs", max_epochs, ...
+                    "Minibatch", mini, ...
+                    "Parameters", parameters);
+train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainParams); % train the neural network and save to disk (only call once per concat)
 
-train_concat = fullfile(fldrName, sprintf("trainnet-%s.mat", parameters));
-if exist(train_concat, 'file') ~= 2
-    train_network(trainImagePath, pixelImagePath, imageSize, classNames, pixelLabelIDs, optim, learn_rate, max_epochs, mini, fldrName, parameters); % train the neural network and save to disk (only call once per concat)
-end
-netTrained = load(train_concat);
+netTrained = load(fullfile(fldrName, train_concat));
 test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
-
 gen_predictive_img(testImagePath, parameters, imageSize, classNames);

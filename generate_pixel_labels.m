@@ -11,8 +11,6 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
     end
 
     imdsTrain = imageDatastore(trainPath, IncludeSubfolders=true, LabelSource="foldernames");
-    % imgResize = transform(imdsTrain, @(x) imresize(x, imageSize)); % resize images
-    % imgIdx = transform(imgResize, @(x) rgb2ind(x, colmap.cm));
 
     files = imdsTrain.Files;
     cm = colmap.cm;
@@ -21,7 +19,6 @@ function generate_pixel_labels(trainPath, pixelPath, pixelLabelIDs, imageSize, c
         destPath = string(replace(file, trainPath, pixelPath));
         if exist(destPath, 'file') ~= 2
             img = imread(file, "png");
-            img = imresize(img, imageSize);
             img = rgb2ind(img, cm);
             [height, width, ~] = size(img);
 
