@@ -43,6 +43,8 @@ trainParams = struct("Optimizer", NameValueArgs.Optimizer, ...
                      "Minibatch", NameValueArgs.BatchSize);
 train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainParams); % train the neural network and save to disk (only call once per concat)
 
-gen_predictive_img(testImagePath, parameters, imageSize, classNames);
 netTrained = load(fullfile(fldrName, fldrArgs.ModelFile));
 test_network(testImagePath, imageSize, netTrained.netTrained, fldrArgs.OutputFolder, parameters); % load the neural network from disk and then test the data
+gen_predictive_img(testImagePath, fldrArgs.OutputFolder, imageSize, classNames);
+
+end

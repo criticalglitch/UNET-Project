@@ -1,4 +1,4 @@
-function gen_predictive_img(testPath, unetParams, imgSize, classNames)
+function gen_predictive_img(testPath, unetDir, imgSize, classNames)
     fprintf("Generating Predicted Images Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     %  Eval   Output
@@ -19,8 +19,6 @@ function gen_predictive_img(testPath, unetParams, imgSize, classNames)
     imdsTest = imageDatastore(testPath, IncludeSubfolders=true);                % Read from Test Images Directory
     testresize = transform(imdsTest, @(x) imresize(x, 'OutputSize', imgSize));  % Resize all images to match size
     wrappedImg = transform(testresize, @(x) {x});                               % Wrap in a Cell
-
-    unetDir = sprintf("UNet-%s", unetParams);
 
     fdsOut = fileDatastore(fullfile(unetDir, "Output"), "FileExtensions", [ ".mat" ], "ReadFcn", @load); % Read from Unet Output Directory all .mat Files and load each one
     sigProb = transform(fdsOut, @(x) extractdata(x.output(:, :, 1)));                                               % Read Signal Probability from file and converts from dlarray
