@@ -1,5 +1,12 @@
-clearvars; clc; close('all');
+function unetTest(NameValueArgs)
+arguments 
+    NameValueArgs.Optimizer = "adam" % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
+    NameValueArgs.LearnRate = 1e-3   % Default = 1e-2
+    NameValueArgs.MaxEpochs = 1      % Number of Epochs to Run
+    NameValueArgs.BatchSize = 4      % Minibatch Size
+end
 
+clearvars; clc; close('all');
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
 trainImagePath = fullfile('Images', 'Training');
@@ -11,37 +18,31 @@ pixelLabelIDs = { [0 0 255], [255 0 0] }; % create an array that maps pixels to 
 imageSize = [ 720 960 ];
 class_dim = size(pixelLabelIDs, 2);
 
-optim = "adam"; % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
-learn_rate = 1e-3; % default = 1e-2
-max_epochs = 1;
-mini = 4; % minibatch size
-parameters = sprintf("%s-%f-%d-%d", optim, learn_rate, max_epochs, mini);
-
 function classes = componentMatrixToClasses(componentMatrix)
     [ ~, classes ] = max(componentMatrix, [], 3);
 end
 
-fldrName = sprintf("UNet-%s", parameters);
-if exist(fldrName, "dir") ~= 7
-    mkdir(fldrName);
+parameters = sprintf("%s-%f-%d-%d", NameValueArgs.Optimizer, NameValueArgs.LearnRate, NameValueArgs.MaxEpochs, NameValueArgs.BatchSize);
+fldrArgs = struct("TrainImages",  trainImagePath, ...
+                  "LabelImages",  pixelImagePath, ...
+                  "OutputFolder", sprintf("UNet-%s", parameters), ...
+                  "ModelFile",    sprintf("trainnet-%s.mat", parameters));
+
+if exist(fldrArgs.OutputFolder, "dir") ~= 7
+    mkdir(fldrArgs.OutputFolder);
 end
 
 generate_test_images(testImagePath, imageSize);
 generate_training_images(imageSize);
 generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
 % generate_evaluation_truth(); % TODO: Pass in necessary parameters
-train_concat = sprintf("trainnet-%s.mat", parameters);
-fldrArgs = struct("TrainImages", trainImagePath, ...
-                    "LabelImages", pixelImagePath, ...
-                    "OutputFolder", fldrName, ...
-                    "ModelFile", train_concat);
-trainParams = struct("Optimizer", optim, ...
-                    "LearnRate", learn_rate, ...
-                    "MaxEpochs", max_epochs, ...
-                    "Minibatch", mini, ...
-                    "Parameters", parameters);
+
+trainParams = struct("Optimizer", NameValueArgs.Optimizer, ...
+                     "LearnRate", NameValueArgs.LearnRate, ...
+                     "MaxEpochs", NameValueArgs.MaxEpochs, ...
+                     "Minibatch", NameValueArgs.BatchSize);
 train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainParams); % train the neural network and save to disk (only call once per concat)
 
-netTrained = load(fullfile(fldrName, train_concat));
-test_network(testImagePath, imageSize, netTrained.netTrained, fldrName, parameters); % load the neural network from disk and then test the data
 gen_predictive_img(testImagePath, parameters, imageSize, classNames);
+netTrained = load(fullfile(fldrName, fldrArgs.ModelFile));
+test_network(testImagePath, imageSize, netTrained.netTrained, fldrArgs.OutputFolder, parameters); % load the neural network from disk and then test the data
