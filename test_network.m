@@ -1,4 +1,4 @@
-function test_network(testImagePath, imageSize, netTrained, fldrName, parameters)
+function test_network(testImagePath, imageSize, netTrained, fldrName)
     fprintf("Network Testing Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     imdsTest = imageDatastore(testImagePath, IncludeSubfolders=true);
@@ -15,7 +15,7 @@ function test_network(testImagePath, imageSize, netTrained, fldrName, parameters
         fileIdx = fileIdx + 1;
         d = dlarray(single(img), 'SSCB');
         output = predict(netTrained, d, InputDataFormats='SSCB');
-        save(fullfile(outName, sprintf("output-%s-%04d.mat", parameters, fileIdx)), "output");
+        save(fullfile(outName, sprintf("%s-%04d.mat", replace(fldrName, "UNet", "output"), fileIdx)), "output");
     end
 
     fprintf("Network Testing Finished At: %s\nem", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
