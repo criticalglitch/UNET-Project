@@ -54,7 +54,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
                                   Shuffle='every-epoch' ...
         );
 
-        save(fullfile(fldrArgs.OutputFolder, replace(fldrArgs.ModelName, "trainnet", "debug")));
+        save(fullfile(fldrArgs.OutputFolder, replace(fldrArgs.ModelFile, "trainnet", "debug")));
         [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
         currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
         exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
