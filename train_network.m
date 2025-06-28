@@ -2,12 +2,12 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
     fprintf("Network Training Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
     modelFile = fullfile(fldrArgs.OutputFolder, fldrArgs.ModelFile);
     if exist(modelFile, 'file') ~= 2
-        % create the training image datastore for the spectrograms    
+        % create the training image datastore for the spectrograms
         imdsTrain = imageDatastore(fldrArgs.TrainImages, IncludeSubfolders=true, LabelSource="foldernames");
 
         % create the pixel data store
         pxds = pixelLabelDatastore(fldrArgs.LabelImages, classNames, pixelLabelIDs, IncludeSubfolders = true);
-        
+
         % add train-test split for validation
         [imdsTrainSplit, imdsValSplit, pxdsTrainSplit, pxdsValSplit] = partition_semantic_segmentation_data(imdsTrain, pxds, 0.8);
 
@@ -33,13 +33,13 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         else
             lossFcn = "crossentropy";
         end
-        
+
         % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
         options = trainingOptions(trainParams.Optimizer, ...
                                   InitialLearnRate=trainParams.LearnRate, ...
                                   LearnRateSchedule=trainParams.LearnSche, ...
                                   LearnRateDropFactor=trainParams.LearnDrop, ...
-                                  LearnRateDropPeriod=trainParams.LDrpPerd, ...
+                                  LearnRateDropPeriod=trainParams.LDropPerd, ...
                                   MaxEpochs=trainParams.MaxEpochs, ...
                                   CheckpointFrequency=1, ...
                                   InputDataFormats='SSCB', ...
@@ -60,6 +60,6 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
         save(modelFile, 'netTrained');
     end
-    
+
     fprintf("Network Training Finished At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 end
