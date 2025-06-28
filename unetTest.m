@@ -9,7 +9,6 @@ arguments
     NameValueArgs.LearnDropPeriod (1, 1) {mustBePositive} = 5
 end
 
-clearvars; clc; close('all');
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
 trainImagePath = fullfile('Images', 'Training');
