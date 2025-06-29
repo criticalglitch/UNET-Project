@@ -26,7 +26,8 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         % encoderNetwork = pretrainedEncoderNetwork("googlenet", depth);
         unetNetwork = unet(netImgSize, numClasses, ...
                            NumFirstEncoderFilters=64, ...
-                           FilterSize=3, ConvolutionPadding="same");
+                           FilterSize=3, ConvolutionPadding="same", ...
+                           EncoderDepth=trainParams.EncdrDpth);
 
         if numClasses == 2
             lossFcn = "binary-crossentropy";

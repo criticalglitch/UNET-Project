@@ -7,6 +7,7 @@ arguments
     NameValueArgs.LearnSchedule (1, 1) {mustBeTextScalar} = "piecewise"
     NameValueArgs.LearnDropFactor (1, 1) {mustBePositive} = 0.2
     NameValueArgs.LearnDropPeriod (1, 1) {mustBePositive} = 5
+    NameValueArgs.EncoderDepth (1, 1) {mustBePositive} = 4
 end
 
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
@@ -52,7 +53,8 @@ trainParams = struct("Optimizer", NameValueArgs.Optimizer, ...
                      "Minibatch", NameValueArgs.BatchSize, ...
                      "LearnSche", NameValueArgs.LearnSchedule, ...
                      "LearnDrop", NameValueArgs.LearnDropFactor, ...
-                     "LDropPerd", NameValueArgs.LearnDropPeriod);
+                     "LDropPerd", NameValueArgs.LearnDropPeriod, ...
+                     "EncdrDpth", NameValueArgs.EncoderDepth);
 train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainParams); % train the neural network and save to disk (only call once per concat)
 
 netTrained = load(fullfile(fldrArgs.OutputFolder, fldrArgs.ModelFile));
