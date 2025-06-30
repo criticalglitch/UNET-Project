@@ -23,5 +23,5 @@ exec > >(tee -a "$LOG_FILE") 2>&1
 # ls -l /nonexistent_directory # This error will also be logged
 for item in "${testValues[@]}"; do
 	echo "Appending run with value $item to logfile."
-	/usr/bin/matlab -nodesktop -nosplash -r "unetTest(LearnRate=0.001, MaxEpochs=$item, BatchSize=4, LearnDropFactor=0.2, LearnDropPeriod=5, Momentum=0.9, EncoderDepth=4, numFiltersValues=64, filterSizeValues=3); exit;"
+	/usr/bin/matlab -nodesktop -nosplash -r "unetTest(LearnRate=0.001, MaxEpochs=$item, BatchSize=4, LearnDropFactor=0.2, LearnDropPeriod=5, Momentum=0.9, EncoderDepth=4, NumFirstEncoderFilters=64, FilterSize=3); exit;"
 done
