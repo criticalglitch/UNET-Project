@@ -8,7 +8,7 @@ arguments
     NameValueArgs.LearnDropFactor (1, 1) {mustBePositive} = 0.2
     NameValueArgs.LearnDropPeriod (1, 1) {mustBePositive} = 5
     NameValueArgs.EncoderDepth (1, 1) {mustBePositive} = 4
-    NameValueArgs.Momentum (1, 1) {mustBePositive}, {mustBeNumeric} = 0.9
+    NameValueArgs.Momentum (1, 1) {mustBePositive, mustBeNumeric} = 0.9
 end
 
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
