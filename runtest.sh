@@ -1,4 +1,9 @@
 #!/bin/bash
+export PATH=/usr/local/lib/:/usr/local/cuda-12.9/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64:/usr/lib/x86_64-linux-gnu${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export NVIDIA_CUDNN=/usr/local/cuda
+export NVIDIA_TENSORRT=/usr/local/cuda/TensorRT
+
 #declare -a optimizerValues=("adam" "sgdm" "rmsprop");
 #declare -a learnRateValues=("0.001" "0.0005" "0.00001");
 #declare -a epochValues=("1" "50" "100" "250");
