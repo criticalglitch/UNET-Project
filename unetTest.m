@@ -20,7 +20,7 @@ testImagePath = fullfile("Images", "Evaluation");
 pixelImagePath = fullfile("Images", "GroundTruth");
 
 classNames = [ "Signal", "Noise" ];         % labels
-pixelLabelIDs = { [0 0 255], [255 0 0] }; % create an array that maps pixels to classes
+pixelLabelIDs = { [255 255 255], [0 0 0] }; % create an array that maps pixels to classes
 imageSize = [ 720 960 ];
 class_dim = size(pixelLabelIDs, 2);
 
