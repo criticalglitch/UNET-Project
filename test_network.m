@@ -12,8 +12,8 @@ function test_network(testImagePath, imageSize, netTrained, fldrName)
     while hasdata(imdsTest)
         img = read(imdsTest);
         fileIdx = fileIdx + 1;
-        d = dlarray(single(img), 'SSCB');
-        output = predict(netTrained, d, InputDataFormats='SSCB', Acceleration="auto");
+        d = dlarray(gpuArray(single(img)), 'SSCB');
+        output = predict(netTrained, d, InputDataFormats='SSCB', Acceleration="mex");
         save(fullfile(outName, sprintf("%s-%04d.mat", replace(fldrName, "UNet", "output"), fileIdx)), "output");
     end
 
