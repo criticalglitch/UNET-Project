@@ -14,6 +14,13 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         combinedTrain = combine(imdsTrainSplit, pxdsTrainSplit);
         combinedVal = []; % combine(imdsValSplit, pxdsValSplit);
 
+        % Pass it the combined train datastore
+        % Second param is 2 because we have 2 things coming from the datastore (image and pixel label)
+        % MiniBatchSize is the size of the batch we want to use
+        % MiniBatchFormat specifies the channel format of the outputs
+        % Proceprocessing Environment set to parallel to run preprocessing on multiple CPU cores before feeding to GPU
+        mbq = minibatchqueue(combinedTrain, 2, MiniBatchSize=trainParams.Minibatch, MiniBatchFormat=[ "SSCB" "" ], PreprocessingEnvironment="parallel");
+
         h = imageSize(1);
         w = imageSize(2);
 
@@ -99,7 +106,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         end
 
         save(fullfile(fldrArgs.OutputFolder, replace(fldrArgs.ModelFile, "trainnet", "debug")));
-        [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
+        [netTrained, ~] = trainnet(mbq, unetNetwork, lossFcn, options); % train
         currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
         exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
         save(modelFile, 'netTrained');
