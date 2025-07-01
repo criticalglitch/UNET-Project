@@ -45,6 +45,7 @@ fldrArgs = struct("TrainImages",  trainImagePath, ...
                   "OutputFolder", sprintf("UNet-%s", parameters), ...
                   "ModelFile",    sprintf("trainnet-%s.mat", parameters));
 
+disp([ 'Directory: ' fldrArgs.OutputFolder ]);
 if exist(fldrArgs.OutputFolder, "dir") ~= 7
     mkdir(fldrArgs.OutputFolder);
 end
