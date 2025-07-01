@@ -16,7 +16,7 @@ arguments
     NameValueArgs.Epsilon (1, 1) {mustBePositive, mustBeNumeric} = 1e-8 % adam only
     NameValueArgs.L2 (1, 1) {mustBePositive, mustBeNumeric} = 0.0001 % adam only
     NameValueArgs.GradientThreshold (1, 1) {mustBePositive, mustBeNumeric} = 1 % adam only
-    NameValueArgs.GradientThresholdMethod (1, 1) {mustBe}= "l2norm" % adam only
+    NameValueArgs.GradientThresholdMethod (1, :) {mustBeTextScalar}= "l2norm" % adam only
 end
 
 fprintf("Script Start: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));

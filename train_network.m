@@ -18,8 +18,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         % Second param is 2 because we have 2 things coming from the datastore (image and pixel label)
         % MiniBatchSize is the size of the batch we want to use
         % MiniBatchFormat specifies the channel format of the outputs
-        % Proceprocessing Environment set to parallel to run preprocessing on multiple CPU cores before feeding to GPU
-        mbq = minibatchqueue(combinedTrain, 2, MiniBatchSize=trainParams.Minibatch, MiniBatchFormat=[ "SSCB" "" ], PreprocessingEnvironment="parallel");
+        % mbq = minibatchqueue(combinedTrain, 2, MiniBatchSize=trainParams.Minibatch, MiniBatchFormat=[ "SSCB" "" ]);
 
         h = imageSize(1);
         w = imageSize(2);
@@ -57,8 +56,8 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
                                   Metrics=[ "accuracy", "fscore", "rmse" ], ...
                                   ValidationData=combinedVal, ...
                                   ValidationFrequency=30, ...
-                                  ValidationDataFormats='SSCB', ...
 %{
+                                  ValidationDataFormats='SSCB', ...
                                   ValidationPatience=5, ...
 %}
                                   Shuffle='every-epoch');
@@ -73,7 +72,6 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
 %            options.CategoricalTargetEncoding = "integer"; % "auto", "integer", "one-hot"
             options.ResetInputNormalization = 1; % boolean, 1 is default
             options.BatchNormalizationStatistics = "auto"; % "auto", "population", "moving"
-        end
         else
         % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
             options = trainingOptions(trainParams.Optimizer, ...
@@ -100,11 +98,11 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
                                   ValidationPatience=5, ...
 %}
                                   Shuffle='every-epoch' ...
-        );
+	        );
         end
 
         save(fullfile(fldrArgs.OutputFolder, replace(fldrArgs.ModelFile, "trainnet", "debug")));
-        [netTrained, ~] = trainnet(mbq, unetNetwork, lossFcn, options); % train
+        [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
         currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
         exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
         save(modelFile, 'netTrained');

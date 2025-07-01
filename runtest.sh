@@ -26,7 +26,7 @@ export NVIDIA_TENSORRT=/usr/local/cuda/TensorRT
 #      gradientThresholdMethodValues epsilonValues l2Values);
 #testArray=(optimizerValues learnRateValues dropFactorValues dropPeriodValues epochValues
 #	   minibatchValues momentumValues encoderDepthValues numFiltersValues filterSizeValues); % sgdm only
-testValues=("5" "10" "20");
+testValues=("20");
 #optimizer="adam";
 #scheduler="piecewise";
 LOG_FILE="logfile.log";
