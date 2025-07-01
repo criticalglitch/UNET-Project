@@ -1,7 +1,7 @@
 function unetTest(NameValueArgs)
 arguments 
     NameValueArgs.Optimizer (1, 1) {mustBeTextScalar} = "adam" % "sgdm", "rmsprop", "adam", "lbfgs", "lm"
-    NameValueArgs.LearnRate (1, 1) {mustBeNumeric} = 1e-3   % Default = 1e-2
+    NameValueArgs.LearnRate (1, 1) {mustBeNumeric} = 1.5e-4   % Default = 1e-2
     NameValueArgs.MaxEpochs (1, 1) {mustBeGreaterThan(NameValueArgs.MaxEpochs, 0)} = 1      % Number of Epochs to Run
     NameValueArgs.BatchSize (1, 1) {mustBeGreaterThan(NameValueArgs.BatchSize, 0)} = 4      % Minibatch Size
     NameValueArgs.LearnSchedule (1, 1) {mustBeTextScalar} = "piecewise"
