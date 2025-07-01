@@ -2,14 +2,16 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
     fprintf("Network Training Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
     modelFile = fullfile(fldrArgs.OutputFolder, fldrArgs.ModelFile);
     if exist(modelFile, 'file') ~= 2
+
         % create the training image datastore for the spectrograms
         imdsTrain = imageDatastore(fldrArgs.TrainImages, IncludeSubfolders=true, LabelSource="foldernames");
+        imdsNorm = tranform(imdsTrain, @imnorm);
 
         % create the pixel data store
         pxds = pixelLabelDatastore(fldrArgs.LabelImages, classNames, pixelLabelIDs, IncludeSubfolders = true);
 
         % add train-test split for validation
-        [imdsTrainSplit, imdsValSplit, pxdsTrainSplit, pxdsValSplit] = partition_semantic_segmentation_data(imdsTrain, pxds, 0.8);
+        [imdsTrainSplit, imdsValSplit, pxdsTrainSplit, pxdsValSplit] = partition_semantic_segmentation_data(imdsNorm, pxds, 0.8);
 
         combinedTrain = combine(imdsTrainSplit, pxdsTrainSplit);
         combinedVal = []; % combine(imdsValSplit, pxdsValSplit);

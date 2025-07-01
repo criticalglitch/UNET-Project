@@ -1,7 +1,10 @@
 function test_network(testImagePath, imageSize, netTrained, fldrName)
     fprintf("Network Testing Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
-    imdsTest = imageDatastore(testImagePath, IncludeSubfolders=true);
+    imds = imageDatastore(testImagePath, IncludeSubfolders=true);
+    imdsNorm = transform(imds, @imnorm);
+    
+    imdsTest = imdsNorm;
     fileIdx = 0;
 
     outName = fullfile(fldrName, "Output");
