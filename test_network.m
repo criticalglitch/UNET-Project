@@ -1,4 +1,4 @@
-function test_network(testImagePath, imageSize, netTrained, fldrName)
+function test_network(testImagePath, netTrained, fldrName)
     fprintf("Network Testing Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     imds = imageDatastore(testImagePath, IncludeSubfolders=true);
