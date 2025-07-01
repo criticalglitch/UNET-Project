@@ -42,7 +42,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
             lossFcn = "crossentropy";
         end
         if trainParams.Optimizer == "adam"
-                                  options = trainingOptionsADAM("adam", ...
+            options = trainingOptions("adam", ...
                                   InitialLearnRate=trainParams.LearnRate, ...
                                   MiniBatchSize=trainParams.Minibatch, ...
                                   LearnRateSchedule=trainParams.LearnSche, ...
@@ -61,21 +61,19 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
 %{
                                   ValidationPatience=5, ...
 %}
-                                  Shuffle='every-epoch', ...
-                                  GradientDecayFactor=trainParams.GradientDecay, ...
-                                  SquaredGradientDecayFactor=trainParams.SquaredGradient, ...
-                                  Epsilon=trainParams.Epsilon, ...
-                                  CategoricalInputEncoding="integer", ... % "integer", "one-hot"
-%{
-                                  CategoricalTargetEncoding="integer" % "auto", "integer", "one-hot"
-%}
-                                  L2Regularization=trainParams.L2, ...
-                                  ResetInputNormalization=1, ... % boolean, 1 is default
-                                  BatchNormalizationStatistics="auto", ... % "auto", "population", "moving"
-                                  GradientThreshold=trainParams.GradientThreshold, ...
-                                  GradientThresholdMethod="l2norm", ... % "l2norm", "global-l2norm", "absolute-value"
-
-                                  );
+                                  Shuffle='every-epoch');
+            % Adam optimizer options
+            options.GradientDecayFactor = trainParams.GradientDecay;
+            options.SquaredGradientDecayFactor = trainParams.SquaredGradient;
+            options.Epsilon = trainParams.Epsilon;
+            options.L2Regularization = trainParams.L2;
+            options.GradientThreshold = trainParams.GradientThreshold;
+            options.GradientThresholdMethod = trainParams.GradientThresholdMethod;
+            options.CategoricalInputEncoding = "integer"; % "integer", "one-hot"
+%            options.CategoricalTargetEncoding = "integer"; % "auto", "integer", "one-hot"
+            options.ResetInputNormalization = 1; % boolean, 1 is default
+            options.BatchNormalizationStatistics = "auto"; % "auto", "population", "moving"
+        end
         else
         % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
             options = trainingOptions(trainParams.Optimizer, ...
