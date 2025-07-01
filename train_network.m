@@ -14,6 +14,13 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         combinedTrain = combine(imdsTrainSplit, pxdsTrainSplit);
         combinedVal = []; % combine(imdsValSplit, pxdsValSplit);
 
+        % Pass it the combined train datastore
+        % Second param is 2 because we have 2 things coming from the datastore (image and pixel label)
+        % MiniBatchSize is the size of the batch we want to use
+        % MiniBatchFormat specifies the channel format of the outputs
+        % Proceprocessing Environment set to parallel to run preprocessing on multiple CPU cores before feeding to GPU
+        mbq = minibatchqueue(combinedTrain, 2, MiniBatchSize=trainParams.Minibatch, MiniBatchFormat=[ "SSCB" "" ], PreprocessingEnvironment="parallel");
+
         h = imageSize(1);
         w = imageSize(2);
 
@@ -35,7 +42,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
             lossFcn = "crossentropy";
         end
         if trainParams.Optimizer == "adam"
-                                  options = trainingOptionsADAM("adam", ...
+            options = trainingOptions("adam", ...
                                   InitialLearnRate=trainParams.LearnRate, ...
                                   MiniBatchSize=trainParams.Minibatch, ...
                                   LearnRateSchedule=trainParams.LearnSche, ...
@@ -54,21 +61,19 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
 %{
                                   ValidationPatience=5, ...
 %}
-                                  Shuffle='every-epoch', ...
-                                  GradientDecayFactor=trainParams.GradientDecay, ...
-                                  SquaredGradientDecayFactor=trainParams.SquaredGradient, ...
-                                  Epsilon=trainParams.Epsilon, ...
-                                  CategoricalInputEncoding="integer", ... % "integer", "one-hot"
-%{
-                                  CategoricalTargetEncoding="integer" % "auto", "integer", "one-hot"
-%}
-                                  L2Regularization=trainParams.L2, ...
-                                  ResetInputNormalization=1, ... % boolean, 1 is default
-                                  BatchNormalizationStatistics="auto", ... % "auto", "population", "moving"
-                                  GradientThreshold=trainParams.GradientThreshold, ...
-                                  GradientThresholdMethod="l2norm", ... % "l2norm", "global-l2norm", "absolute-value"
-
-                                  );
+                                  Shuffle='every-epoch');
+            % Adam optimizer options
+            options.GradientDecayFactor = trainParams.GradientDecay;
+            options.SquaredGradientDecayFactor = trainParams.SquaredGradient;
+            options.Epsilon = trainParams.Epsilon;
+            options.L2Regularization = trainParams.L2;
+            options.GradientThreshold = trainParams.GradientThreshold;
+            options.GradientThresholdMethod = trainParams.GradientThresholdMethod;
+            options.CategoricalInputEncoding = "integer"; % "integer", "one-hot"
+%            options.CategoricalTargetEncoding = "integer"; % "auto", "integer", "one-hot"
+            options.ResetInputNormalization = 1; % boolean, 1 is default
+            options.BatchNormalizationStatistics = "auto"; % "auto", "population", "moving"
+        end
         else
         % loss function definition (classification: "crossentropy", "index-crossentropy", "binary-crossentropy"), (regression: "mae", "mse", "huber")
             options = trainingOptions(trainParams.Optimizer, ...
@@ -99,7 +104,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
         end
 
         save(fullfile(fldrArgs.OutputFolder, replace(fldrArgs.ModelFile, "trainnet", "debug")));
-        [netTrained, ~] = trainnet(combinedTrain, unetNetwork, lossFcn, options); % train
+        [netTrained, ~] = trainnet(mbq, unetNetwork, lossFcn, options); % train
         currentfig = findall(groot, 'Tag', 'DEEPMONITOR_UIFIGURE'); % grab figure
         exportgraphics(currentfig, fullfile(fldrArgs.OutputFolder, "trainloss.png"));
         save(modelFile, 'netTrained');
