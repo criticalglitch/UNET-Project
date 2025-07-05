@@ -53,7 +53,7 @@ end
 generate_test_images(testImagePath, imageSize);
 generate_training_images(imageSize);
 generate_pixel_labels(trainImagePath, pixelImagePath, pixelLabelIDs, imageSize, @componentMatrixToClasses);
-generate_evaluation_truth(testImagePath, pixelLabelIDs); 
+generate_evaluation_truth(testImagePath, pixelLabelIDs, @componentMatrixToClasses); 
 
 trainParams = struct("Optimizer", NameValueArgs.Optimizer, ...
                      "LearnRate", NameValueArgs.LearnRate, ...

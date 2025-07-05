@@ -1,7 +1,8 @@
-function generate_evaluation_truth(testPath, pixelLabelIDs)
+function generate_evaluation_truth(testPath, pixelLabelIDs, classifier)
     arguments(Input)
         testPath (1, :) {mustBeTextScalar}
         pixelLabelIDs (1, :)
+        classifier (1, 1)
     end
     fprintf("Generating Evaluation Truth Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
