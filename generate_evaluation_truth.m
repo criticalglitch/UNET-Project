@@ -19,7 +19,7 @@ function generate_evaluation_truth(testPath, pixelLabelIDs)
         file = string(files(fileIdx));
         destFile = replace(file, "Evaluation", "EvalTruth");
         if exist(destFile, 'file') ~= 2
-            img = imload(file);
+            img = imread(file);
             img = rgb2ind(img, cm);
             [height, width, ~] = size(img);
 
