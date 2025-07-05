@@ -72,4 +72,6 @@ netTrained = load(fullfile(fldrArgs.OutputFolder, fldrArgs.ModelFile));
 test_network(testImagePath, netTrained.netTrained, fldrArgs.OutputFolder); % load the neural network from disk and then test the data
 gen_predictive_img(testImagePath, fldrArgs.OutputFolder, imageSize, classNames);
 
+compare_results();
+
 end
