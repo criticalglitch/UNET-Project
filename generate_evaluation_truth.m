@@ -1,6 +1,6 @@
 function generate_evaluation_truth(pixelLabelIDs)
     arguments(Input)
-        pixelLabelIDs (1, :) {mustBeCellArray}
+        pixelLabelIDs (1, :)
     end
     fprintf("Generating Evaluation Truth Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
