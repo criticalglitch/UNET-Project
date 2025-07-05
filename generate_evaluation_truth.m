@@ -15,7 +15,7 @@ function generate_evaluation_truth(testPath, pixelLabelIDs)
     files = imdsTrain.Files;
     cm = colmap.cm;
 
-    for fileIdx = 1:length(files)
+    parfor fileIdx = 1:length(files)
         file = string(files(fileIdx));
         destFile = replace(file, "Evaluation", "EvalTruth");
         if exist(destFile, 'file') ~= 2
