@@ -45,7 +45,7 @@ function generate_evaluation_truth(testPath, pixelLabelIDs, classifier)
             end
             newI = reshape(newI, height, width, 3);
 
-            imwrite(newI, destPath);
+            imwrite(newI, destFile);
         end
     end
 
