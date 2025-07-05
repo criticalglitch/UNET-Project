@@ -1,5 +1,6 @@
-function generate_evaluation_truth(pixelLabelIDs)
+function generate_evaluation_truth(testPath, pixelLabelIDs)
     arguments(Input)
+        testPath (1, :) {mustBeTextScalar}
         pixelLabelIDs (1, :)
     end
     fprintf("Generating Evaluation Truth Images Started Generating At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
@@ -9,7 +10,7 @@ function generate_evaluation_truth(pixelLabelIDs)
         mkdir(imagePath);
     end
     colmap = load("colormap.mat");
-    imdsTrain = imageDatastore(trainPath, IncludeSubfolders=true, LabelSource="foldernames");
+    imdsTrain = imageDatastore(testPath, IncludeSubfolders=true, LabelSource="foldernames");
 
     files = imdsTrain.Files;
     cm = colmap.cm;
