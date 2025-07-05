@@ -14,6 +14,7 @@ function generate_evaluation_truth(testPath, pixelLabelIDs)
 
     files = imdsTrain.Files;
     cm = colmap.cm;
+    class_dim = size(pixelLabelIDs, 2);
 
     parfor fileIdx = 1:length(files)
         file = string(files(fileIdx));
