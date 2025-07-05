@@ -5,7 +5,7 @@ function train_network(fldrArgs, imageSize, classNames, pixelLabelIDs, trainPara
 
         % create the training image datastore for the spectrograms
         imdsTrain = imageDatastore(fldrArgs.TrainImages, IncludeSubfolders=true, LabelSource="foldernames");
-        imdsNorm = tranform(imdsTrain, @imnorm);
+        imdsNorm = transform(imdsTrain, @imnorm);
 
         % create the pixel data store
         pxds = pixelLabelDatastore(fldrArgs.LabelImages, classNames, pixelLabelIDs, IncludeSubfolders = true);
