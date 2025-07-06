@@ -2,7 +2,7 @@ function compare_results(truthFolder, outputFolder)
     fprintf("Compiling Results Started At: %s\n", datetime('now','TimeZone','local','Format','d-MMM-y HH:mm:ss Z'));
 
     imdsTruth = imageDatastore(truthFolder);
-    imdsOutput = imageDatastore(fullfile(outputFolder, "Output"));
+    imdsOutput = imageDatastore(fullfile(outputFolder, "OverlayImages"));
 
     compare = combine(imdsTruth, imdsOutput);
     diffed = transform(compare, @(x) imabsdiff(x{1}, x{2}));
